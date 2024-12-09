@@ -20,6 +20,7 @@ require (
 	github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db // indirect
 	github.com/onsi/gomega v1.36.0
 	github.com/thediveo/fdooze v0.3.1
+	github.com/thediveo/success v1.0.2
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/tools v0.26.0 // indirect
 )

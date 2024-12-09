@@ -1,6 +1,6 @@
 # `faf` Fire and Forget (Crash Later)
 
-![Coverage](https://img.shields.io/badge/Coverage-96.2%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-96.0%25-brightgreen)
 
 **faf** is a Go module **for Linux** that springs from working on the system
 discovery service [lxkns](https://github.com/thediveo/lxkns). Some of the hot
