@@ -33,10 +33,10 @@ type Bytestring struct {
 	pos int    // parsing position within the line contents
 }
 
-// newBytestring returns a new Bytestring object for parsing the supplied text
+// NewBytestring returns a new Bytestring object for parsing the supplied text
 // line as a byte slice. It is small enough to be allocated on the stack,
 // avoiding heap allocations.
-func newBytestring(b []byte) *Bytestring {
+func NewBytestring(b []byte) *Bytestring {
 	return &Bytestring{
 		pos: 0,
 		b:   b,

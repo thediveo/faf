@@ -29,7 +29,7 @@ package faf
 // ParseUint copies the input string to the error message so that in turn the
 // compiler can now use optimized []byte to string conversions.
 func ParseUint(b []byte) (uint64, bool) {
-	buff := newBytestring(b) // go-es without heap alloc/escape.
+	buff := NewBytestring(b) // go-es without heap alloc/escape.
 	val, ok := buff.Uint64()
 	if !ok {
 		return 0, ok

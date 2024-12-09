@@ -27,12 +27,12 @@ var _ = Describe("byteline", func() {
 	When("checking for EOL", func() {
 
 		It("returns EOL for empty line", func() {
-			bstr := newBytestring([]byte{})
+			bstr := NewBytestring([]byte{})
 			Expect(bstr.EOL()).To(BeTrue())
 		})
 
 		It("returns EOL for empty line", func() {
-			bstr := newBytestring([]byte("foo"))
+			bstr := NewBytestring([]byte("foo"))
 			Expect(bstr.EOL()).To(BeFalse())
 			bstr.pos += 3
 			Expect(bstr.EOL()).To(BeTrue())
@@ -43,12 +43,12 @@ var _ = Describe("byteline", func() {
 	When("skipping space", func() {
 
 		It("reports EOL", func() {
-			bstr := newBytestring([]byte("   "))
+			bstr := NewBytestring([]byte("   "))
 			Expect(bstr.SkipSpace()).To(BeTrue())
 		})
 
 		It("advances past spaces", func() {
-			bstr := newBytestring([]byte("   foo"))
+			bstr := NewBytestring([]byte("   foo"))
 			Expect(bstr.SkipSpace()).To(BeFalse())
 			Expect(bstr.pos).To(Equal(3))
 		})
@@ -58,13 +58,13 @@ var _ = Describe("byteline", func() {
 	When("skipping text", func() {
 
 		It("skips only expected text", func() {
-			bstr := newBytestring([]byte("foobar"))
+			bstr := NewBytestring([]byte("foobar"))
 			Expect(bstr.SkipText("foo")).To(BeTrue())
 			Expect(bstr.pos).To(Equal(3))
 		})
 
 		It("doesn't skip unexpected things", func() {
-			bstr := newBytestring([]byte("bar"))
+			bstr := NewBytestring([]byte("bar"))
 			Expect(bstr.SkipText("baz")).To(BeFalse())
 			Expect(bstr.pos).To(Equal(0))
 
@@ -80,14 +80,14 @@ var _ = Describe("byteline", func() {
 	When("getting the next byte", func() {
 
 		It("returns !ok at eol", func() {
-			bstr := newBytestring([]byte(""))
+			bstr := NewBytestring([]byte(""))
 			ch, ok := bstr.Next()
 			Expect(ok).To(BeFalse())
 			Expect(ch).To(BeZero())
 		})
 
 		It("returns the next byte", func() {
-			bstr := newBytestring([]byte("AB"))
+			bstr := NewBytestring([]byte("AB"))
 			Expect(Ok(bstr.Next())).To(Equal(byte('A')))
 			Expect(Ok(bstr.Next())).To(Equal(byte('B')))
 			Expect(bstr.EOL()).To(BeTrue())
@@ -115,21 +115,21 @@ var _ = Describe("byteline", func() {
 		})
 
 		It("returns a correct number", func() {
-			bstr := newBytestring([]byte("4"))
+			bstr := NewBytestring([]byte("4"))
 			Expect(Ok(bstr.Uint64())).To(Equal(uint64(4)))
 			Expect(bstr.pos).To(Equal(1))
 
-			bstr = newBytestring([]byte("7foo"))
+			bstr = NewBytestring([]byte("7foo"))
 			Expect(Ok(bstr.Uint64())).To(Equal(uint64(7)))
 			Expect(bstr.pos).To(Equal(1))
 
-			bstr = newBytestring([]byte("1234567890123"))
+			bstr = NewBytestring([]byte("1234567890123"))
 			Expect(Ok(bstr.Uint64())).To(Equal(uint64(1234567890123)))
 			Expect(bstr.pos).To(Equal(13))
 		})
 
 		It("rejects numbers outside the uint64 range", func() {
-			bstr := newBytestring([]byte(fmt.Sprintf("%d0", uint64(math.MaxUint64))))
+			bstr := NewBytestring([]byte(fmt.Sprintf("%d0", uint64(math.MaxUint64))))
 			v, ok := bstr.Uint64()
 			Expect(ok).To(BeFalse())
 			Expect(v).To(BeZero())
@@ -139,17 +139,17 @@ var _ = Describe("byteline", func() {
 	When("counting fields", func() {
 
 		It("returns nothing from nothing", func() {
-			bstr := newBytestring([]byte(""))
+			bstr := NewBytestring([]byte(""))
 			Expect(bstr.NumFields()).To(BeZero())
 
-			bstr = newBytestring([]byte(" "))
+			bstr = NewBytestring([]byte(" "))
 			Expect(bstr.NumFields()).To(BeZero())
 		})
 
 		It("counts correctly", func() {
-			bstr := newBytestring([]byte(" F  BAR BAZ"))
+			bstr := NewBytestring([]byte(" F  BAR BAZ"))
 			Expect(bstr.NumFields()).To(Equal(3))
-			bstr = newBytestring([]byte(" F  BAR BAZ RATZ "))
+			bstr = NewBytestring([]byte(" F  BAR BAZ RATZ "))
 			Expect(bstr.NumFields()).To(Equal(4))
 		})
 
