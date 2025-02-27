@@ -25,28 +25,58 @@ import (
 
 var _ = Describe("parsing uint64s", func() {
 
-	It("returns a correct value", func() {
-		Expect(Ok(ParseUint([]byte("42")))).To(Equal(uint64(42)))
-		Expect(Ok(ParseUint([]byte(strconv.FormatUint(cutoffDecimalUint64-1, 10))))).
-			To(Equal(uint64(cutoffDecimalUint64) - 1))
+	Context("decimal", func() {
+
+		It("returns a correct value", func() {
+			Expect(Ok(ParseUint([]byte("42")))).To(Equal(uint64(42)))
+			Expect(Ok(ParseUint([]byte(strconv.FormatUint(cutoffDecimalUint64-1, 10))))).
+				To(Equal(uint64(cutoffDecimalUint64) - 1))
+		})
+
+		It("rejects invalid numbers", func() {
+			v, ok := ParseUint([]byte(fmt.Sprintf("%d0", uint64(math.MaxUint64))))
+			Expect(ok).NotTo(BeTrue())
+			Expect(v).To(BeZero())
+		})
+
+		It("rejects trailing junk", func() {
+			v, ok := ParseUint([]byte("42DO'H!"))
+			Expect(ok).NotTo(BeTrue())
+			Expect(v).To(BeZero())
+		})
+
+		It("rejects non-number wisdom", func() {
+			v, ok := ParseUint([]byte("DO'H!"))
+			Expect(ok).NotTo(BeTrue())
+			Expect(v).To(BeZero())
+		})
+
 	})
 
-	It("rejects invalid numbers", func() {
-		v, ok := ParseUint([]byte(fmt.Sprintf("%d0", uint64(math.MaxUint64))))
-		Expect(ok).NotTo(BeTrue())
-		Expect(v).To(BeZero())
-	})
+	Context("hexadecimal", func() {
 
-	It("rejects trailing junk", func() {
-		v, ok := ParseUint([]byte("42DO'H!"))
-		Expect(ok).NotTo(BeTrue())
-		Expect(v).To(BeZero())
-	})
+		It("returns a correct value", func() {
+			Expect(Ok(ParseHexUint([]byte("42")))).To(Equal(uint64(0x42)))
+		})
 
-	It("rejects non-number wisdom", func() {
-		v, ok := ParseUint([]byte("DO'H!"))
-		Expect(ok).NotTo(BeTrue())
-		Expect(v).To(BeZero())
+		It("rejects invalid numbers", func() {
+			v, ok := ParseHexUint([]byte("1ffffffffffffffff"))
+			Expect(ok).NotTo(BeTrue())
+			Expect(v).To(BeZero())
+		})
+
+		It("rejects trailing junk", func() {
+			v, ok := ParseHexUint([]byte("42DO'H!"))
+			Expect(ok).NotTo(BeTrue())
+			Expect(v).To(BeZero())
+		})
+
+		It("rejects non-number wisdom", func() {
+			v, ok := ParseHexUint([]byte("GOSH!"))
+			Expect(ok).NotTo(BeTrue())
+			Expect(v).To(BeZero())
+		})
+
 	})
 
 })

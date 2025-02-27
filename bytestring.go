@@ -88,34 +88,86 @@ func (b *Bytestring) Next() (ch byte, ok bool) {
 
 const cutoffDecimalUint64 = (1<<64-1)/10 + 1
 
-// Uint64 parses the number starting in the buffer at the current position until
-// a character other than 0-9 is encountered, or EOL. The number must consist of
-// at least a single digit. If successful, Uint64 returns the number and true;
-// otherwise zero and false. Overflowing Uint64 is also considered to be an
-// error, returning zero and false in this case.
+// Uint64 parses the decimal number starting in the buffer at the current
+// position until a character other than 0-9 is encountered, or EOL. The number
+// must consist of at least a single digit. If successful, Uint64 returns the
+// number and true; otherwise zero and false. Overflowing Uint64 is also
+// considered to be an error, returning zero and false in this case.
 func (b *Bytestring) Uint64() (num uint64, ok bool) {
-	if b.pos >= len(b.b) {
-		return 0, false
-	}
-	ch := b.b[b.pos]
-	if ch < '0' || ch > '9' {
-		return 0, false
-	}
-	num = uint64(ch - '0')
-	b.pos++
 	for {
 		if b.pos >= len(b.b) {
+			if !ok {
+				// We never consumed at least a single digit, so this is right
+				// dead on arrival.
+				return 0, false
+			}
+			// Reached the end and we had at least a single digit consumed, so
+			// this is fine.
 			return num, true
 		}
 		ch := b.b[b.pos]
 		if ch < '0' || ch > '9' {
+			if !ok {
+				// Again, the first character is already bad, so we report an
+				// error.
+				return 0, false
+			}
+			// We've reached the end of the number, other stuff now following;
+			// we're done and successfully report the number we've parsed.
 			return num, true
 		}
+		// Don't overflow...
 		if num >= cutoffDecimalUint64 {
 			return 0, false
 		}
 		num = num*10 + uint64(ch-'0')
 		b.pos++
+		ok = true // yes, we successfully got a(nother) digit.
+	}
+}
+
+const cutoffHexUint64 = 1 << 60
+
+// HexUint64 parses the hexadecimal number starting in the buffer at the current
+// position until a character other than 0-9, a-f, or A-F is encountered, or
+// EOL. The number must consist of at least a single hex digit. If successful,
+// HexUint64 returns the number and true; otherwise zero and false. Overflowing
+// HexUint64 is also considered to be an error, returning zero and false in this
+// case.
+func (b *Bytestring) HexUint64() (num uint64, ok bool) {
+	for {
+		if b.pos >= len(b.b) {
+			if !ok {
+				// We never consumed at least a single digit, so this is right
+				// dead on arrival.
+				return 0, false
+			}
+			// Reached the end and we had at least a single digit consumed, so
+			// this is fine.
+			return num, true
+		}
+		ch := b.b[b.pos]
+		var digit byte
+		if ch >= '0' && ch <= '9' {
+			digit = ch - '0'
+		} else if ch >= 'a' && ch <= 'f' {
+			digit = ch - 'a' + 10
+		} else if ch >= 'A' && ch <= 'F' {
+			digit = ch - 'A' + 10
+		} else if !ok {
+			return 0, false
+		} else {
+			// We've reached the end of the number, other stuff now following;
+			// we're done and successfully report the number we've parsed.
+			return num, true
+		}
+		// Don't overflow...
+		if num >= cutoffHexUint64 {
+			return 0, false
+		}
+		num = num<<4 + uint64(digit)
+		b.pos++
+		ok = true // yes, we successfully got a(nother) digit.
 	}
 }
 
