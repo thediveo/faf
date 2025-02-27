@@ -95,7 +95,7 @@ var _ = Describe("byteline", func() {
 
 	})
 
-	When("parsing numbers", func() {
+	When("parsing decimal numbers", func() {
 
 		It("requires at least one digit", func() {
 			bstr := &Bytestring{b: []byte("")}
@@ -134,6 +134,58 @@ var _ = Describe("byteline", func() {
 			Expect(ok).To(BeFalse())
 			Expect(v).To(BeZero())
 		})
+	})
+
+	When("parsing hex numbers", func() {
+
+		It("requires at least one digit", func() {
+			bstr := &Bytestring{b: []byte("")}
+			_, ok := bstr.HexUint64()
+			Expect(ok).To(BeFalse())
+			Expect(bstr.pos).To(Equal(0))
+
+			bstr = &Bytestring{b: []byte("g00")}
+			_, ok = bstr.HexUint64()
+			Expect(ok).To(BeFalse())
+			Expect(bstr.pos).To(Equal(0))
+
+			bstr = &Bytestring{b: []byte("!!!")}
+			_, ok = bstr.HexUint64()
+			Expect(ok).To(BeFalse())
+			Expect(bstr.pos).To(Equal(0))
+		})
+
+		DescribeTable("returns correct numbers",
+			func(s string, num uint64) {
+				bstr := &Bytestring{b: []byte(s)}
+				res, ok := bstr.HexUint64()
+				Expect(ok).To(BeTrue())
+				Expect(res).To(Equal(num))
+				Expect(bstr.pos).To(Equal(len(s)))
+			},
+			Entry(nil, "0", uint64(0)),
+			Entry(nil, "a", uint64(0xa)),
+			Entry(nil, "f", uint64(0xf)),
+			Entry(nil, "A", uint64(0xa)),
+			Entry(nil, "F", uint64(0xf)),
+			Entry(nil, "DeadbEEfF001cafE", uint64(0xdeadbeeff001cafe)),
+			Entry(nil, "ffffffffffffffff", uint64(0xffffffffffffffff)),
+		)
+
+		It("returns a correct number before garbage", func() {
+			bstr := NewBytestring([]byte("7foo"))
+			Expect(Ok(bstr.HexUint64())).To(Equal(uint64(0x7f)))
+			Expect(bstr.pos).To(Equal(2))
+
+		})
+
+		It("rejects numbers outside the uint64 range", func() {
+			bstr := NewBytestring([]byte("1ffffffffffffffff"))
+			v, ok := bstr.HexUint64()
+			Expect(ok).To(BeFalse())
+			Expect(v).To(BeZero())
+		})
+
 	})
 
 	When("counting fields", func() {

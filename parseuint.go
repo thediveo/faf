@@ -17,7 +17,7 @@ package faf
 // ParseUint parses the given byte slice with a decimal number, returning its
 // uint64 value and ok, or a zero value and false in case of error. It is an
 // error for the given decimal number overflows the uint64 range or if there
-// bytes for characters other than "0" to "9" are encounterd.
+// bytes for characters other than "0" to "9" are encountered.
 //
 // Compared with [strconv.ParseUint], this version is around 50% faster, albeit
 // that is moaning at high level. Both versions do not allocate on the heap in
@@ -31,6 +31,23 @@ package faf
 func ParseUint(b []byte) (uint64, bool) {
 	buff := NewBytestring(b) // go-es without heap alloc/escape.
 	val, ok := buff.Uint64()
+	if !ok {
+		return 0, ok
+	}
+	if !buff.EOL() {
+		return 0, false
+	}
+	return val, ok
+}
+
+// ParseHexUint parses the given byte slice with a hexadecimal number, returning
+// its uint64 value and ok, or a zero value and false in case of error. It is an
+// error for the given decimal number overflows the uint64 range or if there
+// bytes for characters other than "0" to "9", “a” to “f”, or “A” to “F” are
+// encountered.
+func ParseHexUint(b []byte) (uint64, bool) {
+	buff := NewBytestring(b) // go-es without heap alloc/escape.
+	val, ok := buff.HexUint64()
 	if !ok {
 		return 0, ok
 	}
