@@ -38,7 +38,7 @@ func ReadFile(name string, buffer []byte) ([]byte, bool) {
 	if err != nil {
 		return buffer, false
 	}
-	defer unix.Close(fd)
+	defer func() { _ = unix.Close(fd) }()
 
 	// If no backing buffer or a buffer with too small capacity was supplied,
 	// set up a new initial buffer.
@@ -52,6 +52,9 @@ func ReadFile(name string, buffer []byte) ([]byte, bool) {
 	// capacity as needed.
 	for {
 		n, err := unix.Read(fd, buffer[len(buffer):cap(buffer)])
+		if n < 0 {
+			n = 0
+		}
 		buffer = buffer[:len(buffer)+n]
 		if err != nil {
 			return buffer, false
