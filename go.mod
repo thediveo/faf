@@ -1,27 +1,31 @@
 module github.com/thediveo/faf
 
-go 1.23.4
+go 1.24.0
 
 require (
-	github.com/onsi/ginkgo/v2 v2.22.0
-	golang.org/x/sys v0.30.0
+	github.com/onsi/ginkgo/v2 v2.27.2
+	golang.org/x/sys v0.38.0
 )
 
 require (
-	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/Masterminds/semver/v3 v3.4.0 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
-	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
-	golang.org/x/text v0.22.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
+	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8 // indirect
+	golang.org/x/mod v0.27.0 // indirect
+	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
-	github.com/go-logr/logr v1.4.2 // indirect
+	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db // indirect
-	github.com/onsi/gomega v1.36.0
-	github.com/thediveo/fdooze v0.3.1
-	github.com/thediveo/success v1.0.2
-	golang.org/x/net v0.36.0 // indirect
-	golang.org/x/tools v0.26.0 // indirect
+	github.com/google/pprof v0.0.0-20250403155104-27863c87afa6 // indirect
+	github.com/onsi/gomega v1.38.2
+	github.com/thediveo/fdooze v0.3.2
+	github.com/thediveo/success v1.0.3
+	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/tools v0.36.0 // indirect
 )
