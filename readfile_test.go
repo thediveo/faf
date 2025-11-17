@@ -58,4 +58,11 @@ var _ = Describe("ReadFile", func() {
 		Expect(contents).To(Equal(osrContents))
 	})
 
+	It("doesn't panic on unix.Read returning -1", func() {
+		var buff []byte
+		contents, ok := ReadFile(".", buff)
+		Expect(ok).To(BeFalse())
+		Expect(contents).To(BeEmpty())
+	})
+
 })
