@@ -129,7 +129,7 @@ var _ = Describe("byteline", func() {
 		})
 
 		It("rejects numbers outside the uint64 range", func() {
-			bstr := NewBytestring([]byte(fmt.Sprintf("%d0", uint64(math.MaxUint64))))
+			bstr := NewBytestring(fmt.Appendf(nil, "%d0", uint64(math.MaxUint64)))
 			v, ok := bstr.Uint64()
 			Expect(ok).To(BeFalse())
 			Expect(v).To(BeZero())

@@ -56,8 +56,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/thediveo/faf"
 	"golang.org/x/sys/unix"
+
+	"github.com/thediveo/faf"
 )
 
 var testdataDirEntriesNum uint // number of fake process directory entries to create for benchmarking
@@ -109,7 +110,7 @@ func bmFileReadDir(b *testing.B, testdatadir string) {
 			b.Fatalf("cannot open directory, reason: %s", err)
 		}
 		direntries, err = dir.ReadDir(-1)
-		dir.Close()
+		_ = dir.Close()
 		if err != nil {
 			b.Fatalf("cannot read directory, reason: %s", err)
 		}
@@ -124,7 +125,7 @@ func bmNewFile(b *testing.B, testdatadir string) {
 		}
 		dir := os.NewFile(uintptr(fd), testdatadir)
 		direntries, err = dir.ReadDir(-1)
-		dir.Close()
+		_ = dir.Close()
 		if err != nil {
 			b.Fatalf("cannot read directory, reason: %s", err)
 		}

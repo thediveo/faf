@@ -65,7 +65,7 @@ func ReadDir(name string) iter.Seq[DirEntry] {
 		if err != nil {
 			return
 		}
-		defer unix.Close(fd)
+		defer func() { _ = unix.Close(fd) }()
 
 		rb := readDirBuffer.Get().(*readBuffer)
 		defer readDirBuffer.Put(rb)
