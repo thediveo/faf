@@ -1,5 +1,8 @@
 # `faf` Fire and Forget (Crash Later)
 
+[![PkgGoDev](https://img.shields.io/badge/-reference-blue?logo=go&logoColor=white&labelColor=505050)](https://pkg.go.dev/github.com/thediveo/faf)
+[![License](https://img.shields.io/github/license/thediveo/faf)](https://img.shields.io/github/license/thediveo/faf)
+![build and test](https://github.com/thediveo/faf/actions/workflows/buildandtest.yaml/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/badge/Coverage-97.2%25-brightgreen)
 
 **faf** is a Go module **for Linux** that springs from working on the system
@@ -63,3 +66,30 @@ while `os.File.ReadDir` runs with O(n) heap allocation, where n is the number of
 directory entries read, `faf.ReadDir` just needs a single small heap allocation.
 This is perfect for these use cases where you just process the directory entries
 and then forget them.
+
+## DevContainer
+
+> [!CAUTION]
+>
+> Do **not** use VSCode's "~~Dev Containers: Clone Repository in Container
+> Volume~~" command, as it is utterly broken by design, ignoring
+> `.devcontainer/devcontainer.json`.
+
+1. `git clone https://github.com/thediveo/faf`
+2. in VSCode: Ctrl+Shift+P, "Dev Containers: Open Workspace in Container..."
+3. select `faf.code-workspace` and off you go...
+
+## Supported Go Versions
+
+`clippy` supports versions of Go that are noted by the [Go release
+policy](https://golang.org/doc/devel/release.html#policy), that is, major
+versions _N_ and _N_-1 (where _N_ is the current major version).
+
+## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Copyright and License
+
+`clippy` is Copyright 2024, 2026 Harald Albrecht, and licensed under the Apache
+License, Version 2.0.

@@ -21,9 +21,10 @@ import (
 	"encoding/binary"
 	"unsafe"
 
+	"golang.org/x/sys/unix"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"golang.org/x/sys/unix"
 )
 
 func makeRawDirEntry64(ino uint64, name string, typ DirEntryType) RawDirEntry64 {
@@ -37,7 +38,7 @@ func makeRawDirEntry64(ino uint64, name string, typ DirEntryType) RawDirEntry64 
 		rde.Name[idx] = int8(uint8(c))
 	}
 	buff := bytes.Buffer{}
-	Expect(binary.Write(&buff, binary.NativeEndian, rde))
+	Expect(binary.Write(&buff, binary.NativeEndian, rde)).To(Succeed())
 	return RawDirEntry64(buff.Bytes()[:int(unsafe.Offsetof(unix.Dirent{}.Name))+len(name)+1])
 }
 
