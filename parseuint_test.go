@@ -34,7 +34,7 @@ var _ = Describe("parsing uint64s", func() {
 		})
 
 		It("rejects invalid numbers", func() {
-			v, ok := ParseUint([]byte(fmt.Sprintf("%d0", uint64(math.MaxUint64))))
+			v, ok := ParseUint(fmt.Appendf(nil, "%d0", uint64(math.MaxUint64)))
 			Expect(ok).NotTo(BeTrue())
 			Expect(v).To(BeZero())
 		})
